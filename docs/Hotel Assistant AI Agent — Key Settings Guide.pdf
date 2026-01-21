@@ -1,0 +1,89 @@
+# 🏨 Hotel Assistant AI Agent — Key Settings Guide  
+**Azure AI Foundry | Production Configuration Checklist**
+
+A practical, copy-paste-friendly guide for configuring a **production-ready hotel concierge / information agent** in Azure AI Foundry.  
+Use this guide when creating a new Agent (or Prompt Flow–backed agent) and when promoting environments from **Dev → Staging → Production**.
+
+---
+
+## 1️⃣ Project & Resource Setup
+
+**Goal:** Clean environment separation, secure data access, predictable deployments.
+
+### Environments
+- Create **separate environments**:
+  - `dev`
+  - `staging`
+  - `prod`
+- Use **separate resource groups or subscriptions** if possible.
+
+### Core Azure Resources
+- Azure AI Foundry (Agent + Evaluations)
+- Azure OpenAI (Models)
+- Azure AI Search (optional, for RAG)
+- Azure Storage (Blobs / Files)
+- Azure Key Vault (secrets)
+- Azure Monitor / Application Insights (telemetry)
+
+### Networking (if sensitive data exists)
+- Private Endpoints + VNET integration
+- IP allowlists for admin tools
+- Egress rules for outbound calls
+
+### RBAC
+- **Least privilege only**
+  - Owner / Contributor → platform operators
+  - Reader → stakeholders
+  - Custom roles → evaluators / annotators
+
+### Secrets Management
+- Never hardcode keys
+- Store API keys & connection strings in **Azure Key Vault**
+- Reference secrets via **Foundry connections**
+
+---
+
+## 2️⃣ Agent Identity & Policy
+
+**Goal:** Ensure the agent behaves consistently, safely, and within scope.
+
+### Agent Role Definition
+- Clear identity:
+  > “You are a professional hotel concierge assisting guests with hotel-related questions.”
+
+### Scope (What the Agent CAN do)
+- Answer factual questions about:
+  - Amenities
+  - Restaurant hours
+  - Check-in / check-out policies
+- Provide polite guidance and clarification
+
+### Boundaries (What the Agent MUST NOT do)
+- No guessing or fabricating policies
+- No access to personal guest data
+- No booking, billing, or payment execution
+- No legal or medical advice
+
+### Escalation Rules
+- If information is missing or ambiguous:
+  - State uncertainty clearly
+  - Recommend contacting hotel staff
+
+---
+
+## 3️⃣ Prompt & Response Controls
+
+**Goal:** Deterministic, audit-safe, and trustworthy responses.
+
+### Tone & Style
+- Professional, polite, guest-friendly
+- Conservative language
+- No speculation
+
+### Evidence Discipline
+- Answer only from known information
+- If not found:
+  > “That information isn’t available in my current knowledge.”
+
+### Output Structure
+Recommended response format:
